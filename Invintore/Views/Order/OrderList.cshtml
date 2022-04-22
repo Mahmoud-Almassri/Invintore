@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "OrderList";
+    Layout = "~/Views/Shared/Home.cshtml";
+}
+
+@section Head{
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+         function Edit(id) {
+                    window.location = '@Url.Action("New_Order/id", "Order")'.replace('id',id)
+        }
+        function Delete(id) {
+            window.location = '@Url.Action("Delete/id","Order")'.replace("id", id)
+        }
+        $(document).ready(function () {
+            $.ajax({
+                type: 'get',
+                url: '@Url.Action("FillOrder", "Order")',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: '{}',
+                success: function (data) {
+                    debugger;
+                    $.each(data, function (key, value) {
+                        $("#tbl").append('<tr><td><input type=checkbox id="subCheck"/></td><td>' + value.ID + '</td><td>' + value.Customer_ID + '</td><td>' + value.Phone + '</td><td>' + value.Product_ID + '</td><td>' + value.Quantity + '</td><td>' + value.TotalAmount + '</td><td><input type=button id="Edit" Value=Edit  onclick="Edit(' + value.ID + ')" ></td><td><input type=button id="Delete" Value=Delete   onclick="Delete('+ value.ID +')" ></td ></tr > ')
+                    })
+
+                },
+                error: function () { alert("Table Error") }
+            })
+            $("#Check").click(function () {
+                debugger;
+                if ($("#Check").is(":checked")) {
+                    $("#tbl input:checkbox").prop("checked", true);
+                }
+                else {
+                    $("#subCheck").prop("checked", false);
+                }
+            })
+           
+               
+        })
+    </script>
+}
+@section Body{
+    <table id="tbl">
+        <tr>
+            <td>
+                <input type="checkbox" id="Check" />
+            </td>
+            <td>
+                Order ID
+            </td>
+            <td>
+                Customer Number
+            </td>
+            <td>
+                Customer Phone
+            </td>
+            <td>
+                Product Name
+            </td>
+            <td>
+                Quantity
+            </td>
+            <td>
+                Total Price
+            </td>
+            <td>
+                Option
+            </td>
+        </tr>
+    </table>
+}

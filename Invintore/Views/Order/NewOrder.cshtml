@@ -1,0 +1,145 @@
+﻿@model Invintore.Models.VM
+@{
+    ViewBag.Title = "NewOrder";
+    Layout = "~/Views/Shared/Home.cshtml";
+}
+@section Head{
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            debugger;
+            var id = '@ViewBag.id'
+            if (id != 0) {
+                $.ajax({
+                    type: 'get',
+                    url: '@Url.Action("Edit/id", "Order")'.replace("id", id),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: '{}',
+                    success: function (data) {
+                        debugger;
+
+                        $("#OrderVM_ID").val(data.ID)
+                        
+
+                    },
+                    error: function () { debugger; alert(Response.error) }
+                })
+
+            }
+            $("#OrderVM_Customer_ID").change(function () {
+
+                var id = $("#OrderVM_Customer_ID").val();
+                $.ajax({
+                    type: 'get',
+                    url: '@Url.Action("Fill_Customer/id","Order")'.replace("id", id),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: '{}',
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            $("#OrderVM_Address").val(value.Address)
+                            $("#OrderVM_Phone").val(value.Phone)
+                        }
+
+                    )},
+                    error: function () { alert("Customer Error") }
+                })
+            })
+            $("#OrderVM_Product_ID").change(function () {
+                var id = $("#OrderVM_Product_ID").val();
+                $.ajax({
+                    type: 'get',
+                    url: '@Url.Action("Fill_Product/id", "Order")'.replace("id", id),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    data: '{}',
+                    success: function (data) {
+                        $.each(data, function (key, value) {
+                            debugger;
+                            $("#OrderVM_Price").val(value.Price);
+                            $("#OrderVM_Quantity").val(value.Quantity);
+                        })
+                    },
+                    error: function () { alert("Product Error") }
+                })
+            })
+
+        })
+    </script>
+}
+
+@section Body{
+    <form method="post" action="OrderController">
+        <table>
+            <tr>
+                <td>
+                    @Html.Label("ID")
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.OrderVM.ID)
+                    @Html.ValidationMessageFor(a => a.OrderVM.ID)
+                </td>
+                <td>
+                    @Html.Label("Date")
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.OrderVM.Date)
+                    @Html.ValidationMessageFor(a => a.OrderVM.Date)
+                </td>
+
+            </tr>
+            <tr>
+                <td>
+                    @Html.Label("Customer")
+                </td>
+                <td>
+                    @Html.DropDownListFor(a => a.OrderVM.Customer_ID, new SelectList(Model.CustomerVM, "ID", "Name"))
+                </td>
+                <td>
+                    @Html.Label("Address")
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.OrderVM.Address)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Label("Phone")
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.OrderVM.Phone)
+                </td>
+                <td>
+                    @Html.Label("Product")
+                </td>
+                <td>
+                    @Html.DropDownListFor(a => a.OrderVM.Product_ID, new SelectList(Model.ProductVM, "ID", "Name"))
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Label("Price")
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.OrderVM.Price)
+                </td>
+                <td>
+                    @Html.Label("Couantity")
+                </td>
+                <td>
+                    @Html.TextBoxFor(a => a.OrderVM.Quantity)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" name="Save" value="Save" />
+                </td>
+                <td>
+                    <input type="submit" name="Update" value="Update" />
+                </td>
+            </tr>
+
+        </table>
+    </form>
+}
